@@ -46,10 +46,21 @@ function getUserData (player) {
     return Promise.all([
         getProfile(player),
         getRepos(player)
-    ]).then(([ profile, repos ]) => {
+    ]).then(([ profile, repos ]) => ({
         profile, 
-        score: 
-    })
+        score: calculateScore(profile.followers, repos)
+     }))
+}
+
+function sortPlayers (players) {
+    return players.sort((a, b) => b.score - a.score)
+}
+
+export function battle (players) {
+    return Promise.all([
+        getUserData(players[0]),
+        getUserData(players[1])
+    ]).then((results) => sortPlayers(results))
 }
 
 export function fetchPopularRepos (language) {
